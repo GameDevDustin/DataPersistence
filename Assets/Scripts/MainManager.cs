@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 
 public class MainManager : MonoBehaviour {
@@ -10,6 +11,7 @@ public class MainManager : MonoBehaviour {
     public Rigidbody Ball;
 
     public Text ScoreText;
+    public Text HighScoreText;
     public GameObject GameOverText;
     
     private bool m_Started = false;
@@ -34,10 +36,11 @@ public class MainManager : MonoBehaviour {
         }
 
         if (PersistentData.Instance.GetHighScore() > 0 && PersistentData.Instance.GetHighScoreHolderUserName() != string.Empty) {
-            ScoreText.text = "High Score: " + PersistentData.Instance.GetHighScore().ToString() + " by " + PersistentData.Instance.GetHighScoreHolderUserName();
-        } else { Debug.Log("MainManager::Start() Either high score or high score holder username is empty!"); }
-       
-
+            HighScoreText.text = "High Score: " + PersistentData.Instance.GetHighScore().ToString() + " by " + PersistentData.Instance.GetHighScoreHolderUserName();
+        } else {
+            HighScoreText.text = string.Empty;
+            Debug.Log("MainManager::Start() Either high score or high score holder username is empty!");
+        }
     }
 
     private void Update() {
@@ -64,6 +67,10 @@ public class MainManager : MonoBehaviour {
     }
 
     public void GameOver() {
+        if (m_Points > PersistentData.Instance.GetHighScore()) { //Save score if > high score
+            PersistentData.Instance.SetHighScore(m_Points);
+        }
+
         m_GameOver = true;
         GameOverText.SetActive(true);
     }

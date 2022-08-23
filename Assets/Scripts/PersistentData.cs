@@ -16,10 +16,12 @@ public class PersistentData : MonoBehaviour {
 
     public void SetCurrentUserName(string userName) { _currUserName = userName; }
     public string GetCurrentUserName() { return _currUserName; }
-    public void SetHighScore(int newHighScore, string userName) {
+    public void SetHighScore(int newHighScore) {
         if (newHighScore > _highScore) {
-            _highScore = newHighScore;
-            _highScoreHolderUserName = _currUserName;
+            if (_currUserName != string.Empty) {
+                _highScore = newHighScore;
+                _highScoreHolderUserName = _currUserName;
+            } else { Debug.LogError("PersistentData::SetHighScore() PersistantData's current username is empty!"); }
         } else { Debug.Log("PersistentData::SetHighScore() New high score is not greater than the current high score!"); }
     }
     public int GetHighScore() { return _highScore; }
