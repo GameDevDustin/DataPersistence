@@ -2,23 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 
 public class MainManager : MonoBehaviour {
     public Brick BrickPrefab;
     public int LineCount = 6;
     public Rigidbody Ball;
-
     public Text ScoreText;
     public Text HighScoreText;
     public GameObject GameOverText;
-    
     private bool m_Started = false;
     private int m_Points;
-    
     private bool m_GameOver = false;
-
     
 
     void Start() {
@@ -36,7 +31,7 @@ public class MainManager : MonoBehaviour {
         }
 
         if (PersistentData.Instance.GetHighScore() > 0 && PersistentData.Instance.GetHighScoreHolderUserName() != string.Empty) {
-            HighScoreText.text = "High Score: " + PersistentData.Instance.GetHighScore().ToString() + " by " + PersistentData.Instance.GetHighScoreHolderUserName();
+            UpdateHighScoreText();
         } else {
             HighScoreText.text = string.Empty;
             Debug.Log("MainManager::Start() Either high score or high score holder username is empty!");
@@ -69,9 +64,15 @@ public class MainManager : MonoBehaviour {
     public void GameOver() {
         if (m_Points > PersistentData.Instance.GetHighScore()) { //Save score if > high score
             PersistentData.Instance.SetHighScore(m_Points);
+            PersistentData.Instance.SaveDataFile();
+            UpdateHighScoreText();
         }
 
         m_GameOver = true;
         GameOverText.SetActive(true);
+    }
+
+    public void UpdateHighScoreText() {
+        HighScoreText.text = "High Score: " + PersistentData.Instance.GetHighScore().ToString() + " by " + PersistentData.Instance.GetHighScoreHolderUserName();
     }
 }
